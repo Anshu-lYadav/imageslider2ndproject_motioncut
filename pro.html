@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IMAGE SLIDER</title>
+  <link rel="stylesheet" href="desinge.css">
+  <link rel="shortcut icon" href="images/fav.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-decoration: none;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #000;
+      background-image: radial-gradient(circle at top right, rgba(121, 68, 154, 0.13), transparent),
+                        radial-gradient(circle at 20% 80%, rgba(41, 196, 255, 0.13), transparent);
+      color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+    }
+
+    .navbar {
+      background: rgb(0, 0, 0);
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      padding: 20px 40px;
+    }
+
+    .navdiv {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .right-links {
+      display: flex;
+      list-style: none;
+      gap: 25px;
+    }
+
+    .right-links li a {
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .right-links li a:hover {
+      color: #00c6ff;
+    }
+
+    h1 {
+      font-size: 110px;
+      font-weight: 90px;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      -webkit-text-stroke: 4px #0b0b0b;
+    }
+
+    h2 {
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      font-size: 28px;
+      color: rgb(255, 255, 255);
+      padding: 30px;
+    }
+
+    h4 {
+      font-size: small;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      color: lightyellow;
+    }
+
+    h3 {
+      text-align: center;
+      margin: 10px 0;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    }
+
+    main {
+      position: relative;
+      width: 95vw;
+      max-width: 1100px;
+      height: 75vh;
+      max-height: 700px;
+      overflow: hidden;
+      border-radius: 15px;
+      background: black;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .nav {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+    }
+
+    .container {
+      width: 90%;
+      padding: 20px;
+      margin: 100px auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .box {
+      width: 250px;
+      margin: 10px;
+      background: #0b0b0b;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.5s ease;
+    }
+
+    .box:hover {
+      transform: scale(1.3);
+      z-index: 1;
+    }
+
+    .box img {
+      display: block;
+      width: 100%;
+      border-radius: 5px;
+    }
+
+    img.planet {
+      width: 90%;
+      max-width: 400px;
+      display: block;
+      margin: 20px auto;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    p, h3 {
+      text-align: center;
+      max-width: 850px;
+      padding: 0 15px;
+      line-height: 1.6;
+      font-size: 1.05rem;
+    }
+  </style>
+</head>
+<body>
+  <canvas></canvas>
+
+  <h1><u>SOLAR SLIDES</u></h1>
+
+  <nav class="navbar">
+    <div class="navdiv">
+      <ul class="right-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Sign In</a></li>
+        <li><a href="#">Login</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <h2><i>SOLAR SYSTEM</i></h2>
+  <p><h4><i>The Solar System is our cosmic neighborhood, made up of the Sun and everything that orbits around it due to its gravity.
+    The Solar System is a vast and fascinating collection of celestial bodies bound together by the gravity of our central star, the Sun.
+    It consists of eight planets — Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune — which orbit the Sun in elliptical paths. 
+    In addition to the planets, the Solar System includes moons, dwarf planets like Pluto, asteroids, comets, and countless smaller objects and cosmic dust.
+    The Sun’s powerful gravitational pull keeps all these bodies in motion, creating a dynamic system that has existed for over 4.6 billion years. 
+    The Solar System not only provides the conditions necessary for life on Earth, but it also offers endless opportunities for exploration and discovery as we continue to learn more about our cosmic neighborhood. </i>
+    </h4></p>
+  
+    <main>
+      <img src="https://science.nasa.gov/wp-content/uploads/2024/05/sdo-x5pt8-flare-0122ut-may-11-2024-171-193-131.jpg" class="slide active" alt="Image 1">
+      <img src="https://space-facts.com/wp-content/uploads/mercury-transparent.png" class="slide" alt="Image 2">
+      <img src="https://images-assets.nasa.gov/image/PIA00271/PIA00271~large.jpg" class="slide" alt="Image 3">
+      <img src="https://epic.gsfc.nasa.gov/archive/natural/2025/04/11/png/epic_1b_20250411002712.png" class="slide" alt="Image 4">
+      <img src="https://photojournal.jpl.nasa.gov/jpeg/PIA00407.jpg" class="slide" alt="Image 5">
+      <img src="https://photojournal.jpl.nasa.gov/jpeg/PIA22946.jpg" class="slide" alt="Image 6">
+      <img src="https://photojournal.jpl.nasa.gov/jpeg/PIA17172.jpg" class="slide" alt="Image 7">
+      <img src="https://space-facts.com/wp-content/uploads/neptune-transparent.png" class="slide" alt="Image 8">
+      <img src="https://photojournal.jpl.nasa.gov/jpeg/PIA00032.jpg" class="slide" alt="Image 9">
+    </main>
+  
+    <div class="nav">
+      <button onclick="goprev()">Prev</button>
+      <button onclick="gonext()">Next</button>
+    </div>
+  
+    <h2>THE SUN 🌞</h2>
+    <div class="container">
+      <div class="box">
+        <img src="https://space-facts.com/wp-content/uploads/sun-transparent.png" alt="">
+      </div>
+    </div>
+    <h3>
+      The Sun is a massive, glowing ball of hot gases at the center of our solar system...
+      The Sun is the heart of our Solar System and the primary source of energy for life on Earth.
+      It is a massive ball of hot gases, mostly hydrogen and helium, undergoing a process called AS 
+      nuclear fusion in its core. This fusion releases an enormous amount of energy in the form of 
+      light and heat. The Sun’s powerful gravity holds the planets, moons, asteroids, and comets in 
+      orbit, keeping the entire Solar System together.
+    </h3>
+  
+    <h2>THE MERCURY</h2> 
+    <div class="box">
+    <img src="https://space-facts.com/wp-content/uploads/mercury-transparent.png" class="planet" alt="Mercury">
+    </div>
+    <h3>
+      Mercury is the smallest planet in our Solar System and the one closest to the Sun. Despite its 
+      proximity to the Sun, it's not the hottest planet — that title goes to Venus. Mercury has a rocky 
+      surface covered with craters, resembling Earth's Moon. It has no atmosphere to trap heat, which 
+      causes extreme temperature changes — scorching hot during the day (up to 430°C or 800°F) and freezing
+      cold at night (as low as -180°C or -290°F). A year on Mercury, or one complete orbit around the Sun,
+      takes only 88 Earth days.
+    </h3>
+  
+    <h2>THE VENUS</h2>
+    <div class="box">
+    <img src="https://space-facts.com/wp-content/uploads/venus-transparent.png" class="planet" alt="Mercury">
+    </div>
+    <h3>
+      Venus is the second planet from the Sun and is often called Earth’s "sister planet" because of its similar 
+      size and composition. However, Venus has a harsh and extreme environment. It has a thick atmosphere made 
+      mostly of carbon dioxide, with clouds of sulfuric acid, which trap heat and create an intense greenhouse 
+      effect. As a result, Venus is the hottest planet in the Solar System, with surface temperatures soaring 
+      above 460°C (860°F). Its surface is rocky and covered with mountains, volcanoes, and vast plainS.
+    </h3>
+  
+    <h2>THE EARTH</h2>
+    <div class="box">
+    <img src="https://space-facts.com/wp-content/uploads/earth-transparent.png" class="planet" alt="Mercury">
+    </div>
+    <h3>
+      Earth is the third planet from the Sun and the only known planet in the universe that supports life. 
+      It has a perfect balance of atmosphere, temperature, water, and resources that make it a unique and 
+      habitable world. About 71% of Earth's surface is covered by water, while the rest is made up of cont
+      inents and islands. Its atmosphere, rich in nitrogen and oxygen, protects life by blocking harmful
+      radiation and helping regulate temperature. Earth has one natural satellite — the Moon — which affe
+      cts tides and helps stabilize the planet’s rotation. The planet rotates once every 24 hours, giving 
+      us day and night, and revolves around the Sun in about 365 days, creating the seasons.
+    </h3>
+  
+  
+    <h2>THE MARS</h2>
+    <div class="box">
+    <img src="https://space-facts.com/wp-content/uploads/mars-transparent.png" class="planet" alt="Mercury">
+    </div>
+    <h3>
+      Mars, known as the "Red Planet," is the fourth planet from the Sun and one of the most explored planets
+      in our Solar System. Its reddish appearance comes from iron oxide, or rust, on its surface. Mars has a 
+      thin atmosphere made mostly of carbon dioxide and experiences cold temperatures, with an average of about
+      -60°C (-80°F). The planet features the tallest volcano in the Solar System — Olympus Mons — and a vast 
+      canyon system called Valles Marineris. Mars has two small moons, Phobos and Deimos, and its surface shows 
+      signs that liquid water once flowed there, sparking interest in the possibility of past or even present life.
+    </h3>
+  
+    <h2>THE JUPITER</h2>
+    <div class="box">
+    <img src="https://space-facts.com/wp-content/uploads/jupiter-transparent.png" class="planet" alt="Mercury">
+    </div>
+    <h3>
+      Jupiter is the fifth planet from the Sun and the largest planet in our Solar System. It’s a gas giant, made
+      mostly of hydrogen and helium, with no solid surface like Earth. Jupiter is best known for its swirling clouds,
+      powerful storms, and the Great Red Spot — a massive storm larger than Earth that has been raging for centuries. 
+      Its immense gravity helps shape the orbits of other objects in the Solar System and protects the inner planets
+      by capturing or deflecting comets and asteroids. Jupiter has at least 95 known moons, including Ganymede, the 
+      largest moon in the Solar System, even bigger than Mercury.
+      
+    </h3>
+  
+    <h2>THE SATURN </h2>
+    <div class="box">
+    <img src="https://space-facts.com/wp-content/uploads/saturn-transparent.png" class="planet" alt="Mercury">
+    </div>
+    <h3>
+      Saturn is the sixth planet from the Sun and is famous for its stunning system of rings, which make it one of the
+      most visually striking planets in the Solar System. These rings are made of ice, dust, and rock particles that 
+      orbit the planet in wide, flat bands. Saturn is a gas giant, primarily composed of hydrogen and helium, and has
+      no solid surface. It's the second-largest planet in the Solar System after Jupiter. Despite its massive size, 
+      Saturn has a very low density — it would float in water if a large enough ocean existed! The planet has over 140 
+      known moons, including Titan, which is larger than Mercury and has a thick atmosphere and lakes of liquid methane.
+    </h3>
+  
+    <h2>THE URANUS</h2>
+    <div class="box">
+    <img src="https://space-facts.com/wp-content/uploads/uranus-transparent.png" class="planet" alt="Mercury">
+    </div>
+    <h3>
+      Uranus is the seventh planet from the Sun and one of the most unique worlds in the Solar System. It is classified 
+      as an ice giant due to the presence of icy materials like water, ammonia, and methane in its atmosphere. Uranus 
+      has a pale blue-green color caused by methane gas, which absorbs red light and reflects blue. One of its most 
+      unusual features is that it rotates on its side — its axis is tilted at about 98 degrees — making its seasons
+      extremely long and strange. A single year on Uranus lasts 84 Earth years, and each pole gets around 42 years 
+      of continuous sunlight or darkness
+      
+    </h3>
+  
+    <h2>THE NEPTUNE</h2>
+    <div class="box">
+    <img src="https://space-facts.com/wp-content/uploads/neptune-transparent.png" class="planet" alt="Mercury">
+    </div>
+    <h3>
+      Neptune is the eighth and farthest known planet from the Sun in our Solar System. It is a deep blue ice giant, 
+      known for its intense storms and incredibly strong winds — the fastest recorded in the Solar System, reaching 
+      over 2,000 kilometers per hour (1,200 miles per hour). Neptune's striking blue color comes from the presence 
+      of methane in its atmosphere, which absorbs red light and reflects blue. It has a faint ring system and 14 known
+      moons, with Triton being the largest — a frozen world that orbits in the opposite direction of Neptune’s rotation, 
+      suggesting it may have been captured from the Kuiper Belt. 
+    </h3>
+  
+  
+    <p>
+      <a href="https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2F", target="_blank">Facebook</a>
+      <a href="https://in.linkedin.com/", target="_blank">Linkedin</a>
+      <a href="https://www.youtube.com/watch?v=3Cp2QTBZAFQ", target="_blank">YouTube</a>
+    </p>
+
+  <!-- Slider Content and Rest of Page Here -->
+  <!-- Keep your existing slider and planet content from here onwards -->
+
+  <script>
+    const STAR_COLOR = '#fff';
+    const STAR_SIZE = 3;
+    const STAR_MIN_SCALE = 0.2;
+    const OVERFLOW_THRESHOLD = 50;
+    const STAR_COUNT = (window.innerWidth + window.innerHeight) / 8;
+
+    const canvas = document.querySelector('canvas'),
+          context = canvas.getContext('2d');
+
+    let scale = 1, width, height;
+    let stars = [];
+    let pointerX, pointerY;
+    let velocity = { x: 0, y: 0, tx: 0, ty: 0, z: 0.0005 };
+    let touchInput = false;
+
+    generate();
+    resize();
+    step();
+
+    window.onresize = resize;
+    canvas.onmousemove = onMouseMove;
+    canvas.ontouchmove = onTouchMove;
+    canvas.ontouchend = onMouseLeave;
+    document.onmouseleave = onMouseLeave;
+
+    function generate() {
+      for (let i = 0; i < STAR_COUNT; i++) {
+        stars.push({ x: 0, y: 0, z: STAR_MIN_SCALE + Math.random() * (1 - STAR_MIN_SCALE) });
+      }
+    }
+
+    function placeStar(star) {
+      star.x = Math.random() * width;
+      star.y = Math.random() * height;
+    }
+
+    function recycleStar(star) {
+      let direction = 'z';
+      let vx = Math.abs(velocity.x), vy = Math.abs(velocity.y);
+
+      if (vx > 1 || vy > 1) {
+        let axis = vx > vy ? (Math.random() < vx / (vx + vy) ? 'h' : 'v') : (Math.random() < vy / (vx + vy) ? 'v' : 'h');
+        direction = axis === 'h' ? (velocity.x > 0 ? 'l' : 'r') : (velocity.y > 0 ? 't' : 'b');
+      }
+
+      star.z = STAR_MIN_SCALE + Math.random() * (1 - STAR_MIN_SCALE);
+
+      if (direction === 'z') {
+        star.z = 0.1;
+        star.x = Math.random() * width;
+        star.y = Math.random() * height;
+      } else if (direction === 'l') {
+        star.x = -OVERFLOW_THRESHOLD;
+        star.y = height * Math.random();
+      } else if (direction === 'r') {
+        star.x = width + OVERFLOW_THRESHOLD;
+        star.y = height * Math.random();
+      } else if (direction === 't') {
+        star.x = width * Math.random();
+        star.y = -OVERFLOW_THRESHOLD;
+      } else if (direction === 'b') {
+        star.x = width * Math.random();
+        star.y = height + OVERFLOW_THRESHOLD;
+      }
+    }
+
+    function resize() {
+      scale = window.devicePixelRatio || 1;
+      width = window.innerWidth * scale;
+      height = window.innerHeight * scale;
+      canvas.width = width;
+      canvas.height = height;
+      stars.forEach(placeStar);
+    }
+
+    function step() {
+      context.clearRect(0, 0, width, height);
+      update();
+      render();
+      requestAnimationFrame(step);
+    }
+
+    function update() {
+      velocity.tx *= 0.96;
+      velocity.ty *= 0.96;
+      velocity.x += (velocity.tx - velocity.x) * 0.8;
+      velocity.y += (velocity.ty - velocity.y) * 0.8;
+
+      stars.forEach(star => {
+        star.x += velocity.x * star.z;
+        star.y += velocity.y * star.z;
+        star.x += (star.x - width / 2) * velocity.z * star.z;
+        star.y += (star.y - height / 2) * velocity.z * star.z;
+        star.z += velocity.z;
+
+        if (star.x < -OVERFLOW_THRESHOLD || star.x > width + OVERFLOW_THRESHOLD ||
+            star.y < -OVERFLOW_THRESHOLD || star.y > height + OVERFLOW_THRESHOLD) {
+          recycleStar(star);
+        }
+      });
+    }
+
+    function render() {
+      stars.forEach(star => {
+        context.beginPath();
+        context.lineCap = 'round';
+        context.lineWidth = STAR_SIZE * star.z * scale;
+        context.globalAlpha = 0.5 + 0.5 * Math.random();
+        context.strokeStyle = STAR_COLOR;
+
+        let tailX = velocity.x * 2, tailY = velocity.y * 2;
+        if (Math.abs(tailX) < 0.1) tailX = 0.5;
+        if (Math.abs(tailY) < 0.1) tailY = 0.5;
+
+        context.moveTo(star.x, star.y);
+        context.lineTo(star.x + tailX, star.y + tailY);
+        context.stroke();
+      });
+    }
+
+    function movePointer(x, y) {
+      if (typeof pointerX === 'number' && typeof pointerY === 'number') {
+        let ox = x - pointerX, oy = y - pointerY;
+        velocity.tx += (ox / 8 * scale) * (touchInput ? 1 : -1);
+        velocity.ty += (oy / 8 * scale) * (touchInput ? 1 : -1);
+      }
+      pointerX = x;
+      pointerY = y;
+    }
+
+    function onMouseMove(event) {
+      touchInput = false;
+      movePointer(event.clientX, event.clientY);
+    }
+
+    function onTouchMove(event) {
+      touchInput = true;
+      movePointer(event.touches[0].clientX, event.touches[0].clientY);
+      event.preventDefault();
+    }
+
+    function onMouseLeave() {
+      pointerX = null;
+      pointerY = null;
+    }
+    let slides = document.querySelectorAll('.slide');
+    let current = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+    }
+
+    function gonext() {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+    }
+
+    function goprev() {
+      current = (current - 1 + slides.length) % slides.length;
+      showSlide(current);
+    }
+  const starfield = document.getElementById("starfield");
+
+  function createStars(numStars) {
+    for (let i = 0; i < numStars; i++) {
+      const star = document.createElement("div");
+      star.classList.add("star");
+      star.style.top = Math.random() * 100 + "%";
+      star.style.left = Math.random() * 100 + "%";
+      star.style.animationDuration = (Math.random() * 3 + 2) + "s";
+      starfield.appendChild(star);
+    }
+  }
+
+  createStars(150); // you can increase this number for more stars
+  </script>
+</body>
+</html>
